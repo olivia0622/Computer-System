@@ -1,0 +1,41 @@
+#name: mimi chen andrewId : mimic1
+        .pos 0
+init:   irmovq  Stack, %rsp
+        call Main
+        halt
+
+	.align 8
+# Source block
+src:
+        .quad 0x00a
+        .quad 0x0b0
+        .quad 0xc00
+# Destination block
+dest:
+        .quad 0x111
+        .quad 0x222
+        .quad 0x333
+Main:   
+        irmovq src,%rdi
+	irmovq dest,%rsi
+	irmovq $3,%rdx
+        call Copy
+        ret
+Copy:
+	irmovq  $8,%r8
+        irmovq  $1,%r9
+        xorq    %rax, %rax
+        jmp     test
+Loop:   
+        mrmovq  (%rdi), %rcx
+        addq    %r8,%rdi
+        rmmovq  %rcx,(%rsi)
+        addq    %r8,%rsi
+        xorq    %rcx,%rax
+        subq    %r9,%rdx
+test:   
+	andq    %rdx,%rdx
+        jg Loop
+        ret
+	.pos 0x200
+Stack:
